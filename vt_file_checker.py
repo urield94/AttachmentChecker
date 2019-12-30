@@ -26,9 +26,9 @@ class FileScanner:
                     if scans[scan]['result'] is not None:
                         mal_scans += 1
                 print(f"Got report for {file_hash}!")
-                if mal_scans/total_scans > 0.2:
+                if mal_scans/total_scans > 0.05:
                     return "Infected!"
-                elif 0 < mal_scans/total_scans < 0.2:
+                elif 0 < mal_scans/total_scans < 0.05:
                     return "Might be infected"
                 else:
                     return "Clean!"

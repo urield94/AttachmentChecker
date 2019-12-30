@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <link rel=" stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="wrapper fadeInDown">
+    <div class="loader inline"></div>
+    <div id="results"></div>
+
+    <div id="formContent">
+        <div id="main">
+            <!-- Tabs Titles -->
+            <h1 class="active">Gmail Malware Detector</h1>
+            <h4 class="active">Enter your gmail credentials in order to download and scan your email's attachments</h4>
+
+            <!-- Login Form -->
+            <div id="cred_form" action="download_scan_from_email" enctype="multipart/form-data">
+                <input type="text" id="username" class="fadeIn second" name="username" placeholder="username">
+                <input type="password" id="password" class="fadeIn third" name="password" placeholder="password">
+                <button id="download" type="submit" onclick="download()" class="fadeIn fourth">Download</button>
+                <button id="scan"  type="submit" onclick="scan()" class="fadeIn fourth">Scan</button>
+                <button id="download_scan"  type="submit" onclick="download_and_scan()" class="fadeIn fourth">Download & Scan</button>
+            </div>
+        </div>
+        <!-- Remind Passowrd -->
+        <div id="formFooter">
+            <a href="https://github.com/urield94/AttachmentChecker">
+                <img src="{{ url_for('static', filename='imgs/icons-github.png') }}">
+                Uriel & Roni - 2019
+            </a>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

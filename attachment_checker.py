@@ -1,50 +1,55 @@
 """
 EMAIL'S ATTACHMENTS CHECKER
-Check if your email contains malices attachments.
+Check if your Gmail account contains malices attachments, via VirusTotal's sandboxes.
 """
 
-import getpass
 import json
 import os
 import shutil
-import sys
 from time import sleep
 from attachment_downloader import download_attachments
 from vt_file_checker import FileScanner
 
-if __name__ == "__main__":
-    fs = FileScanner("c049106f01aaba8a67e614517b8c17f0ab05dd04a37bbbcd52b43c8ff9272c78")
-    cwd = os.path.dirname(os.path.abspath(__file__))
-    cwd_attachment = f'{cwd}/attachments'
-    if 'attachments' not in os.listdir(cwd):
-        os.mkdir(f'{cwd_attachment}')
-    if 'clean' not in os.listdir(f'{cwd_attachment}'):
-        os.mkdir(f'{cwd_attachment}/clean')
-    if 'not_clean' not in os.listdir(f'{cwd_attachment}'):
-        os.mkdir(f'{cwd_attachment}/not_clean')
+VT_SCAN_TIME = 60
 
-    if len(sys.argv) != 3:
-        username = input('Enter your Gmail username:')
-        password = getpass.getpass('Enter your password:')
-    else:
-        username = sys.argv[1]
-        password = sys.argv[2]
 
-    download_attachments(username, password, fs)
-    sleep(60)
+class AttachmentChecker:
+    def __init__(self):
+        self.fs = FileScanner("c049106f01aaba8a67e614517b8c17f0ab05dd04a37bbbcd52b43c8ff9272c78")
+        self.cwd = os.path.dirname(os.path.abspath(__file__))
+        self.cwd_attachment = f'{self.cwd}/attachments'
+        self.reset()
 
-    with open(f'{cwd_attachment}/attach_json.json', 'r') as fp:
-        attach_hashes = json.load(fp)
-    for attach in attach_hashes:
-        if os.path.isfile(f'{cwd_attachment}/{attach}'):
-            status = fs.get_file_report(attach_hashes[attach]['hash'])
-            if status == "Clean!":
-                shutil.move(f'{cwd_attachment}/{attach}', f'{cwd_attachment}/clean')
-            else:
-                shutil.move(f'{cwd_attachment}/{attach}', f'{cwd_attachment}/not_clean')
+    def reset(self):
+        if 'attachments' in os.listdir(self.cwd):
+            shutil.rmtree(self.cwd_attachment)
+        os.mkdir(f'{self.cwd_attachment}')
+        os.mkdir(f'{self.cwd_attachment}/clean')
+        os.mkdir(f'{self.cwd_attachment}/not_clean')
 
-            with open(f'{cwd_attachment}/attch_summery', "a") as sum:
-                sum.write(f"{attach} - "
-                          f"from: {attach_hashes[attach]['from']}, "
-                          f"Subject: {attach_hashes[attach]['subject']}, "
-                          f"Status: {status}\n")
+    def download(self, username, password):
+        download_attachments(username, password, self.fs)
+
+    def scan(self):
+        with open(f'{self.cwd_attachment}/attach_json.json', 'r') as fp:
+            attach_hashes = json.load(fp)
+        attch_summery = {}
+        for attach in attach_hashes:
+            if os.path.isfile(f'{self.cwd_attachment}/{attach}'):
+                status = self.fs.get_file_report(attach_hashes[attach]['hash'])
+                if status == "Clean!":
+                    shutil.move(f'{self.cwd_attachment}/{attach}', f'{self.cwd_attachment}/clean')
+                else:
+                    shutil.move(f'{self.cwd_attachment}/{attach}', f'{self.cwd_attachment}/not_clean')
+                attch_summery[attach] = {"from": str(attach_hashes[attach]['from']).replace('<', '').replace('>', ''),
+                                         "subject": attach_hashes[attach]['subject'],
+                                         "status": status}
+                with open(f'{self.cwd_attachment}/attch_summery.json', "w") as sum:
+                    json.dump(attch_summery, sum)
+        return attch_summery
+
+    def download_and_scan(self, username, password):
+        self.download(username, password)
+        sleep(VT_SCAN_TIME)
+        attch_summery = self.scan()
+        return attch_summery
