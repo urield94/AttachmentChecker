@@ -4,7 +4,7 @@ import json
 import os
 
 
-def download_attachments(username, password, fs):
+def download_attachments(username, password, fs, cwd):
     try:
         attach_hashes = {}
         imapSession = imaplib.IMAP4_SSL('imap.gmail.com', 993)
@@ -37,7 +37,7 @@ def download_attachments(username, password, fs):
                 file_name = part.get_filename()
 
                 if bool(file_name):
-                    filePath = os.path.join('.', 'attachments', file_name)
+                    filePath = os.path.join(cwd, 'attachments', file_name)
                     print(file_name)
                     fp = open(filePath, 'wb')
                     fp.write(part.get_payload(decode=True))
@@ -47,7 +47,7 @@ def download_attachments(username, password, fs):
 
         imapSession.close()
         imapSession.logout()
-        with open('./attachments/attach_json.json', 'w') as fp:
+        with open(f'{cwd}/attachments/attach_json.json', 'w') as fp:
             json.dump(attach_hashes, fp)
 
     except Exception as e:

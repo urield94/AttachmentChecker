@@ -1,5 +1,6 @@
 import json
 import requests
+import time
 from virustotal_python import virustotal as VT
 
 
@@ -33,4 +34,5 @@ class FileScanner:
                 else:
                     return "Clean!"
             except Exception as e:
-                print(f"Trying to get report for hash {file_hash}")
+                print(f"Scanning files...")
+                time.sleep(5)

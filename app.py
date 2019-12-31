@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import json
 import os
 from flask import Flask, redirect, render_template, request
@@ -34,4 +35,4 @@ def scan():
 
 
 if __name__ == "__main__":
-    application.run()
+    application.run(host="127.0.0.1", port=5000)

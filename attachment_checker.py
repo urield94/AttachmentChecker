@@ -25,7 +25,7 @@ class AttachmentChecker:
 
     def download(self, username, password):
         self.reset()
-        download_attachments(username, password, self.fs)
+        download_attachments(username, password, self.fs, self.cwd)
 
     def scan(self):
         attch_summery_path = f'{self.cwd_attachment}/attch_summery.json'
