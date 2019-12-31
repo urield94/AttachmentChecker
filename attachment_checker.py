@@ -6,11 +6,8 @@ Check if your Gmail account contains malices attachments, via VirusTotal's sandb
 import json
 import os
 import shutil
-from time import sleep
 from attachment_downloader import download_attachments
 from vt_file_checker import FileScanner
-
-VT_SCAN_TIME = 60
 
 
 class AttachmentChecker:
@@ -18,7 +15,6 @@ class AttachmentChecker:
         self.fs = FileScanner("c049106f01aaba8a67e614517b8c17f0ab05dd04a37bbbcd52b43c8ff9272c78")
         self.cwd = os.path.dirname(os.path.abspath(__file__))
         self.cwd_attachment = f'{self.cwd}/attachments'
-        self.reset()
 
     def reset(self):
         if 'attachments' in os.listdir(self.cwd):
@@ -28,12 +24,18 @@ class AttachmentChecker:
         os.mkdir(f'{self.cwd_attachment}/not_clean')
 
     def download(self, username, password):
+        self.reset()
         download_attachments(username, password, self.fs)
 
     def scan(self):
+        attch_summery_path = f'{self.cwd_attachment}/attch_summery.json'
+        if os.path.isfile(f'{attch_summery_path}'):
+            with open(f'{attch_summery_path}', "r") as sum:
+                return json.load(sum)
+
+        attch_summery = {}
         with open(f'{self.cwd_attachment}/attach_json.json', 'r') as fp:
             attach_hashes = json.load(fp)
-        attch_summery = {}
         for attach in attach_hashes:
             if os.path.isfile(f'{self.cwd_attachment}/{attach}'):
                 status = self.fs.get_file_report(attach_hashes[attach]['hash'])
@@ -46,10 +48,4 @@ class AttachmentChecker:
                                          "status": status}
                 with open(f'{self.cwd_attachment}/attch_summery.json', "w") as sum:
                     json.dump(attch_summery, sum)
-        return attch_summery
-
-    def download_and_scan(self, username, password):
-        self.download(username, password)
-        sleep(VT_SCAN_TIME)
-        attch_summery = self.scan()
         return attch_summery

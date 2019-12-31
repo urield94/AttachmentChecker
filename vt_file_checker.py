@@ -33,4 +33,4 @@ class FileScanner:
                 else:
                     return "Clean!"
             except Exception as e:
-                print(f"Can't get report for hash {file_hash} - {e}")
+                print(f"Trying to get report for hash {file_hash}")

@@ -1,7 +1,6 @@
 import json
 import os
 from flask import Flask, redirect, render_template, request
-
 from attachment_checker import AttachmentChecker
 
 application = Flask(__name__)
@@ -21,14 +20,8 @@ def index():
     return render_template("main.html")
 
 
-@application.route("/results")
-def results():
-    return render_template("results.html")
-
-
 @application.route("/download", methods=['GET', 'POST'])
 def download():
-    AC.reset()
     username = request.form.get("username")
     password = request.form.get("password")
     AC.download(username, password)
@@ -38,3 +31,7 @@ def download():
 @application.route("/scan", methods=['GET', 'POST'])
 def scan():
     return json.dumps(AC.scan())
+
+
+if __name__ == "__main__":
+    application.run()

@@ -1,29 +1,32 @@
 function turn_buttons_off(){
-    $("#download").prop("disabled", true);
-    $("#scan").prop("disabled", true);
-    $("#download_scan").prop("disabled", true);
+    $("#download").attr("disabled",true);
+    $("#scan").attr("disabled",true);
+    $("#download_scan").attr("disabled",true);
 }
 
 function turn_buttons_on(){
-    $("#download").prop("disabled", false);
-    $("#scan").prop("disabled", false);
-    $("#download_scan").prop("disabled", false);
+    $("#download").attr("disabled",false);
+    $("#scan").attr("disabled",false);
+    $("#download_scan").attr("disabled",false);
 }
 
 function download_and_scan() {
-    download();
-    scan();
+    download(false);
 }
 
-function download() {
+function download(downloadOnly=true) {
     turn_buttons_off();
     let username = $("#username");
     let password = $("#password");
     let data = {'username': username.val(), 'password': password.val()};
     $.post("/download", data).done(function () {
-        alert("Done downloading attachments");
+        if (downloadOnly)
+            alert("Done downloading attachments");
+        else
+            scan();
+        turn_buttons_on();
     });
-    turn_buttons_on();
+
 }
 
 function scan() {
@@ -75,5 +78,4 @@ function scan() {
         results_div.append(result_table);
         results_div.show();
     });
-    turn_buttons_on();
 }

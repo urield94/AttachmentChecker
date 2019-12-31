@@ -132,6 +132,10 @@ button:active {
   transform: scale(0.95);
 }
 
+button:disabled{
+    background-color: rgba(53, 48, 60, 0.7);
+}
+
 input[type=text],input[type=password] {
   background-color: #f6f6f6;
   border: none;
