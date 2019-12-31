@@ -1,19 +1,12 @@
 # AttachmentChecker
-<h3>Goal - Automate check your emails for malicious attachments.</h3>
+<h3>Automate check for malicious attachments in gmail accounts.</h3>
 
-<h4>Step 1 - Enviroment, est. 1 hour</h4>
+Download the "AttachmentChecker.ova" file and import it using VirtualBox.
 
-* Set up a new enviroment for development on a VM - We will use Ubuntu 18.04.3 LTS. - 1 hour.
-* Make sure that the new enviroment is disconnected from your computer, because we will download the suspicious attachments to the enviroment, and we would like to avoid lateral movement.
+Run the machine and open Chrominim borwser at "127.0.0.1:5000".
 
-<h4>Step 2 - Developement, est. 25 hours</h4>
+You will be requested for your email credentials, and than the checker will download your email attachments to AttachmentChecker\attachemnts and then will scan them using VirusTotal-API.
 
-* Create a flask server that will be our CNC on the new enviroment. - 5 hours.
-* Create an email-reader API using python's imap library, in order to read the email's attachments. - 10 hours.
-* Create a virustotal communicator, in order to send the suspicious attachments to validation at virustotal. - 10 hours.
+When the scan ended, a summery of your attachments-risk status will appear (the status are "clean", "might be infected" or "infected")
 
-<h4>Step 3 - Testing, est. 1 hour</h4>
-
-* Set the CNC to alert on malicious attachments.
-* Send 2 types of files to yourself, malicious and not malicious, and see if the CNC alert on the malicious file.
-
+The downloaded files then will divide to "clean" and "not clean" folders, inside the attachments directory.
